@@ -1,6 +1,3 @@
-
-[TOC]
-
 # Overview
 * Docummentation in MS Learn: 
 [https://learn.microsoft.com/en-us/cli](https://learn.microsoft.com/en-us/cli)
