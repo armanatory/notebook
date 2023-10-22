@@ -3,7 +3,6 @@
 https://learn.microsoft.com/en-us/credentials/certifications/exams/mb-920/
 
 ## 1. Explore the core capabilities of Microsoft Dynamics 365 finance and operations apps
-
 ### 1-1. Describe the finance and operations apps
 ### 1-2. Describe reporting and integration capabilities in finance and operations apps
 
