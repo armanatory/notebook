@@ -4,10 +4,17 @@ https://learn.microsoft.com/en-us/credentials/certifications/exams/mb-920/
 
 ## 1. Explore the core capabilities of Microsoft Dynamics 365 finance and operations apps
 - **ERP software**: ERP, stands for **E**nterprise **R**esource **P**lanning. A software that manages and integrates a company's core processes, such as finance, supply chain, operations, and human resources.
+    - Fundamentally, ERP software enables you to run the core processes of a business.
+    ![Alt text](image.png)
 - **Dynamics 365**: A set of intelligent business applications that work together seamlessly, providing CRM and ERP capabilities in the cloud.
 - **Finance and operations apps**: A subset of Dynamics 365 applications that help businesses manage their global financial systems, operational business processes, and streamlined supply chains.
+    - Dynamics 365 Supply Chain Management
+    - Dynamics 365 Commerce
+    - Dynamics 365 Human Resources
+    - Dynamics 365 Project Operations
 - **Business Central**: A business management solution for small and mid-sized organizations that automates and streamlines business processes within areas such as finance, manufacturing, sales, shipping, project management, and services.
-![Alt text](image.png)
+    - Business Central vs finance and operations apps: BC can be for a single user, while FO requires at least 20 users. BC is also an all-in-one solution, while FO allows you to add the needed functionalities. FO in more complex and needs more configurations than BC.
+
 
 
 ### 1-1. Describe the finance and operations apps
