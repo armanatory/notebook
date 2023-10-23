@@ -2,8 +2,8 @@
 
 Sure! Here's a similar table with some commonly used shortcuts in Visual Studio 2022:
 
-| Action                                | Shortcut                                   |
-| ------------------------------------- | ------------------------------------------ |
+| Action                                | Shortcut                                   | IsImportant |
+| ------------------------------------- | ------------------------------------------ | ----------- |
 | Quick Launch                          | Ctrl + Q                                   |
 | Open File                             | Ctrl + O                                   |
 | Save File                             | Ctrl + S                                   |
@@ -17,9 +17,9 @@ Sure! Here's a similar table with some commonly used shortcuts in Visual Studio 
 | Show IntelliSense                     | Ctrl + Space                               |
 | Peek Definition                       | Alt + F12                                  |
 | View Solution Explorer                | Ctrl + Alt + L                             |
-| Build Solution                        | Ctrl + Shift + B                           |
+| Build Solution                        | Ctrl + Shift + B                           | useful      |
 | Start Debugging                       | F5                                         |
-| Step Into                             | F11                                        |
+| Step Into                             | F11                                        | useful      |
 | Step Out                              | Shift + F11                                |
 | Continue                              | F5 (After Breakpoint)                      |
 | Stop Debugging                        | Shift + F5                                 |
@@ -40,3 +40,4 @@ Sure! Here's a similar table with some commonly used shortcuts in Visual Studio 
 | Show Team Explorer                    | Ctrl + 0, Ctrl + E                         |
 | Show Source Control Explorer          | Ctrl + 0, Ctrl + G                         |
 | Open Extensions                       | Ctrl + Q, then type "Extensions" and Enter |
+| Open Test Explorer                    | --                                         | useful      |
