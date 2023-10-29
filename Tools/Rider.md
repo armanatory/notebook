@@ -1,5 +1,3 @@
-# Rider Quick guide
-
 # Rider Quick Guide and Shortcuts
 
 ## Quick Guide
