@@ -41,3 +41,7 @@ Sure! Here's a similar table with some commonly used shortcuts in Visual Studio 
 | Show Source Control Explorer          | Ctrl + 0, Ctrl + G                         |
 | Open Extensions                       | Ctrl + Q, then type "Extensions" and Enter |
 | Open Test Explorer                    | --                                         | useful      |
+
+# VS Useful links
+
+* Icon packs: https://www.microsoft.com/en-us/download/details.aspx?id=35825
