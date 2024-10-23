@@ -1,4 +1,4 @@
-<h1>Matrix Course Cheat Sheet</h1>
+<h1>Matrix Course Detailed Cheat Sheet</h1>
 
 <h2>Day 1: Core and Intermediate Concepts</h2>
 
@@ -169,4 +169,22 @@
 </ul>
 
 <h3>Practice Problems</h3>
-<p>Focus on mixed problems that combine concepts like determinants, eigenvalues, and projections.</p>
+<ul>
+  <li><strong>Problem 3b</strong>:  
+    <p>Let &#x1D466; and &#x1D467; be n-dimensional vectors. Define the vectors:  
+    p = (&#x1D466; &bull; &#x1D467;/&#x1D466; &bull; &#x1D466;) &#x1D466; and h = &#x1D467; - p. Prove that h is orthogonal to &#x1D466;.</p>
+    <p><strong>Solution</strong>: Compute the dot product &#x1D466; &bull; h and show that it equals zero, implying orthogonality.</p>
+  </li>
+
+  <li><strong>Gaussian Elimination Problem</strong>:  
+    <p>Use Gaussian elimination to solve the following system of linear equations:</p>
+    <p>2x + 3y + z = 1<br>4x + y - z = 2<br>-2x + 2y + 3z = 4</p>
+    <p><strong>Solution</strong>: Perform row operations to reduce the system to row echelon form, and use back substitution to find the solution.</p>
+  </li>
+
+  <li><strong>Determinants and Eigenvalues</strong>:  
+    <p>Find the determinant and eigenvalues of the matrix:</p>
+    <p>A = |4  1|<br>|2  3|</p>
+    <p><strong>Solution</strong>: Calculate the determinant det(A) = 4 * 3 - 1 * 2 = 10. Find eigenvalues by solving det(A - &#x3BB;I) = 0.</p>
+  </li>
+</ul>
