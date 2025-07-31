@@ -10,96 +10,197 @@ https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator
 | 6   | **Practice Exam & Gap Review**              | Take another official practice test + fix any weak spots                      |
 
 
-# 1- Manage Azure identities and governance
+# 1- Implement and manage storage
 ## 🔍 Big Picture
-Think of Azure identities and governance as the “**who, what, and why**” of your cloud environment:
 
-* **Who** gets access? ➝ Microsoft Entra ID (users, groups, roles)
-* **What** can they do? ➝ RBAC (roles like Reader, Contributor, custom roles)
-* **Why** are things done this way? ➝ Governance tools (locks, tags, policies, Blueprints)
+Azure Storage isn’t just blobs. Here’s the lay of the land:
+| Storage Type | Description                                     | Use Case                       |
+| ------------ | ----------------------------------------------- | ------------------------------ |
+| **Blob**     | Unstructured data (text, images, backups, etc.) | App data, backups, media, logs |
+| **File**     | SMB protocol shares                             | Lift-and-shift, shared drives  |
+| **Table**    | NoSQL key-value store                           | Metadata, app configs          |
+| **Queue**    | Message storage (FIFO)                          | Decoupling apps                |
+| **Disk**     | Attached to VMs                                 | Persistent VM storage          |
 
-🧠 Analogy Time:
-Imagine you're running a hotel:
+🎯 Key Topics for the Exam:
 
-* Entra ID = guest list + staff directory
-* RBAC = what rooms they can open
-* Tags = color-coded keycards for billing
-* Locks = “Do Not Disturb” signs (you can’t delete or change this resource!)
-* Azure Policy = hotel rules (e.g., no smoking, all rooms must have a fire alarm)
-
-## 🎯 Deeper Dive
-
-### Azure Locks —> "Do Not Disturb" for Resources
-Locks are extra protection on top of RBAC —> kind of like "no matter who you are or what your role says, you still can’t delete this."
-| Lock Type      | What it Does                                  | Example Use Case                                | Allowed | Denied
-| -------------- | --------------------------------------------- | ----------------------------------------------- |-------- | ------
-| `CanNotDelete` | Users can read and modify, **but not delete** | Protect a storage account from deletion         | Read, Write |Delete
-| `ReadOnly`     | Users can **only view**, not change or delete | Lock critical settings like VNet configurations | Read | Write, Delete
-
-* Azure Policy can prevent certain actions like creating resources without tags, or enforcing location, but doesn’t block deletes by default.
-* The lock overrides RBAC when it comes to denying changes.
-  
-### Azure Policy
-While RBAC controls who can do things, and locks control whether you can change or delete, Azure Policy controls what can exist and how it's configured.
-
-🎯 Core Idea: Enforce consistency across resources.
-Think of it like this:
-
-    Policy = guardrails
-    "Every VM must be in West Europe",
-    "All resources must have a tag Environment",
-    "No public IPs allowed"
-
-The effect is what Azure does when the policy condition is met.
-
-| Effect   | What It Does                            | When to Use                                       |
-| -------- | --------------------------------------- | ------------------------------------------------- |
-| `Deny`   | Blocks the request entirely             | You want to **stop** something from being created |
-| `Audit`  | Logs the violation but allows it        | You want to **monitor** without enforcement       |
-| `Append` | Adds extra settings/tags to the request | You want to **enrich** requests                   |
-| `Modify` | Alters the request before it's allowed  | You want to **fix config automatically**          |
+* Storage tiers (Hot, Cool, Archive)
+* Immutability & Retention
+* Lifecycle Management
+* Identity-based access (Entra ID, RBAC vs Keys)
+* AzCopy basics
+* Replication types (LRS, GRS, ZRS, etc.)
 
 
-### Tags
-Tags are for organization and cost control, allowing groupping and such in reports.
-
-* Tags are not inherited automatically from RGs or subs
-* You can apply tags at any level: resource, RG, subscription
+SMB = Server Message Block, It’s a Windows-based protocol that allows: File sharing Folder access Network printing
 
 
-### Administrative Units – Delegating Management
-This is often confused with groups, but it's a different tool in Entra ID.
-Administrative Units (AUs) are like mini-Entra tenants. You use them to delegate user/group management to specific admins — without giving them control over the whole directory.
+#### Blob vs File:
 
-### Azure Blueprints – "Starter Kits for Governance"
-**Blueprints are like pre-packed kits for building a compliant environment.**
+* Blob: Like storing photos in Google Drive — you upload and download, but you don’t “mount” the folder.
 
-They let you bundle together: ARM templates (resources), RBAC role assignments, Policy assignments, and Resource groups and deploy them as one unit, across multiple subscriptions.
+* File: Like a company network drive — you can open it in Windows Explorer as Z:\SharedDocs.
 
-* Blueprint definitions live in a management group or subscription.
-* When you apply it = Blueprint assignment
-* You can lock resources in a Blueprint assignment (e.g., deny deletion).
-* Blueprints are best for repeatable governance, especially in multi-sub environments.
+| Feature               | **Blob Storage**                       | **File Storage (Azure Files)**               |
+| --------------------- | -------------------------------------- | -------------------------------------------- |
+| Protocol              | **HTTP/HTTPS**, REST API, AzCopy       | **SMB (Server Message Block)**               |
+| Structure             | Flat: containers → blobs               | Hierarchical: shares → folders → files       |
+| Access Style          | App-driven (like object storage on S3) | Like a network drive (Windows File Share)    |
+| Use Cases             | Backups, media, logs, big data         | Shared folders, lift-and-shift legacy apps   |
+| Mountable             | ❌ (not directly by OS)                 | ✅ (mount as drive letter on Windows/Linux)   |
+| Identity-based access | Yes (RBAC, SAS, etc.)                  | Yes (via Entra ID for domain-joined clients) |
 
-### Resource Groups and Subscription Scopes
-🔑 RBAC and policy scope matters:
-| Scope Level      | Example                        |
-| ---------------- | ------------------------------ |
-| Management Group | "All production subscriptions" |
-| Subscription     | "Contoso Dev Subscription"     |
-| Resource Group   | "RG-Finance"                   |
-| Resource         | "VM-WebApp01"                  |
 
-Apply broad policies at the subscription level, and specific RBAC at the resource group/resource level for least privilege. Azure Policy (not RBAC) is often best applied at broader scopes, like the subscription or management group, to ensure consistent enforcement.
+### Storage Tiers 
 
-### PIM – Privileged Identity Management
-PIM is all about temporary, just-in-time elevation of rights.  You don't want someone to have Global Admin 24/7, just for one emergency task.
+You choose a tier per blob or per container (default). Pricing varies by: 
 
-So with PIM:
+* Storage cost (cheap in Archive)
+* Access cost (expensive in Archive)
 
-* You assign eligible roles (not active all the time)
-* The user activates the role when needed
-* You can require MFA, approval, and track audit logs
+| Tier        | Storage Cost 💸 | Access Cost 📈 | Intended Use                          | Access Speed |
+| ----------- | --------------- | -------------- | ------------------------------------- | ---          |
+| **Hot**     | High            | Low            | Frequently accessed                   | Milliseconds |
+| **Cool**    | Medium          | Medium         | Infrequently accessed (30+ days)      | Milliseconds |
+| **Archive** | Very low        | Very high      | Rarely accessed (180+ days retention) | Hours (up to 15 hrs!) |
 
-### 💡Hints
 
+### Immutability & Retention in Azure Blob Storage
+
+    Sometimes you need to freeze your data — for compliance, legal, or safety reasons
+
+Azure Blob Storage supports Immutability Policies, which prevent modification or deletion of data for a specified period.
+
+| Type                     | What It Means                                | Use Case                            |
+| ------------------------ | -------------------------------------------- | ----------------------------------- |
+| **Time-based retention** | Locks data for a fixed duration (`x` days)   | Financial records, audits           |
+| **Legal hold**           | Locks data until you **manually release** it | Ongoing litigation or investigation |
+
+Set on containers
+
+Can be Append Blobs only for certain scenarios (e.g., logging)
+
+Enforced at the storage layer — even Owner can’t delete it
+
+🧠 Think: "Once set, even God can’t delete this until the timer ends."
+
+❗Related Concept: *Version-level immutability* -> You can apply immutability per version of a blob — this gives even finer control. Especially useful when paired with Blob Versioning + Change Feed.
+
+🎯 Common Exam Triggers:
+* "Prevent data from being deleted or modified for 6 months" → Use immutability policy
+* "Prevent deletion only, but allow updates" → ❌ Not possible — use RBAC or lock instead
+* "Comply with legal investigation and hold data" → Legal hold
+
+
+| Feature                       | Blocks Delete | Blocks Modify | Time-based | Manual Release |
+| ----------------------------- | ------------- | ------------- | ---------- | -------------- |
+| **Immutability (Time-based)** | ✅ Yes         | ✅ Yes         | ✅ Yes      | ❌ No           |
+| **Legal Hold**                | ✅ Yes         | ✅ Yes         | ❌ No       | ✅ Yes          |
+| **Locks (`CanNotDelete`)**    | ✅ Yes         | ❌ No          | ❌ No       | ✅ Yes          |
+| **Azure Policy**              | ❌ No          | ❌ No          | ❌ No       | N/A            |
+
+
+### Azure Blob Lifecycle Management – "Automatic Clean-Up Crew": M.A.D
+
+    You define rules that move or delete blobs based on how old or unused they are.
+
+Lifecycle policies let you:
+
+ * Move blobs to Cool or Archive storage
+ * Delete blobs after a set number of days
+ * Apply rules based on: Last modified date | Last access date (optional)
+
+ M.A.D.: Move Archive Delete
+
+
+⚙️ How to Use It (Exam-level detail):
+ * Enable last access tracking (if using last accessed instead of last modified) 🟡 This costs extra
+ * Define a rule in JSON or portal
+ * Apply it to containers or filter by blob prefix/tags
+
+❗If the rule depends on when a blob was last read, but access tracking is not enabled → the rule won't work!*
+
+### Identity-Based Access vs SAS vs Keys
+| Method                            | Best For                          | Identity-based? | Can be time-limited? | Granular? | Pros | Cons
+| --------------------------------- | --------------------------------- | --------------- | -------------------- | --------- | ---- |----
+| **RBAC (Azure AD)**               | Apps, users, automation pipelines | ✅ Yes           | ✅ Yes (via PIM etc.) | ✅ Yes     | Secure, auditable, no secret token, least privilege | Only works with supported tools (AzCopy, SDKs, managed VMs)
+| **Shared Access Signature (SAS)** | Temporary public/shared access    | ❌ No            | ✅ Yes                | ✅ Yes     | Can be account-level, service level, or user delegation, timed|
+| **Account Keys**                  | Admin/root-level access           | ❌ No            | ❌ No                 | ❌ No      | Full control over the account — like a master password|
+
+* User Delegation SAS is a type of SAS that uses Entra ID + RBAC under the hood. It’s perfect for scenarios like:
+ * Apps that authenticate via Entra ID (e.g., login via token)
+ * Need to limit access to one container for a short time
+ * Avoid using account keys
+
+#### SAS Tokens vs Stored Access Policy
+
+* *SAS*: A URL with a query string that grants access to Azure Storage. Has Expiry time, Allowed operations (read, write, delete), IP ranges, and Protocols (https only)
+* *Stored Access Policy?* It's a named template for SAS settings — stored on the container itself.
+
+Why Use Stored Access Policies? You can revoke or rotate access without regenerating all SAS tokens, and Define reusable permissions and durations
+
+
+### AzCopy – Your Command-Line Power Tool
+    AzCopy is a fast CLI tool for copying data to/from Azure Storage.
+
+What Can It Do? Upload/download blobs, files | Copy between: On-prem ↔ Azure, Azure ↔ Azure (even across regions)
+    azcopy copy <source> <destination> [options]
+✅ Works with: SAS tokens, Entra ID login (RBAC) (azcopy login), Access keys
+
+| Feature                      | AzCopy Support             |
+| ---------------------------- | -------------------------- |
+| Copy blobs?                  | ✅ Yes                      |
+| Copy file shares?            | ✅ Yes                      |
+| Copy queues or tables?       | ❌ No                       |
+| Identity-based auth (RBAC)?  | ✅ Yes                      |
+| Works in restricted network? | ❌ Not unless port 443 open |
+
+
+### Replication – Data Redundancy Models
+    Azure Storage keeps multiple copies of your data — depending on the redundancy option you pick.
+
+| Option     | Copies | Across Regions?                | Use Case                          | Notes
+| ---------- | ------ | ------------------------------ | --------------------------------- | ---
+| **LRS**    | 3      | ❌ Local only                   | Cost-effective, single-datacenter | 
+| **ZRS**    | 3+     | ❌ Same region, different zones | High availability within region   |
+| **GRS**    | 6      | ✅ Cross-region                 | Disaster recovery                 | 	Writes in primary, async copy to secondary
+| **GZRS**   | 6+     | ✅ Zone + region                | Best of ZRS + GRS                 |
+| **RA-GRS** | 6      | ✅ + Read-only replica          | Read access even if region down   | GRS + read access to secondary
+
+🧠 LZ-GRGZ: Local, Zonal, Global, Global-Zonal -> (Increasing cost & durability)
+
+
+❗ Exam Triggers:
+ * "Comply with cross-region backup requirement" → GRS/GZRS
+ * "Zone failure protection, no need for geo" → ZRS
+ * "Cheapest for dev/test" → LRS
+ * "App must read from secondary region" → RA-GRS
+ * ZRS stores data in 3 different AZs
+
+🧠 Region = A geographic location containing one or more datacenters.
+ Examples: West Europe (Netherlands), North Europe (Ireland)
+
+
+🧠 Zones = isolation within a region
+    A physically separate datacenter within a single Azure region.
+Each region that supports AZs has at least 3 zones, each with: Independent power, Cooling, Networking
+
+🧠 Geo (Geography) = A broader data residency boundary, often for legal or compliance reasons.
+ Example: EU vs US vs Asia Pacific, West Europe + North Europe = Europe geo
+ * Data replication across regions (like GRS) stays inside a geo when possible (e.g., West Europe → North Europe)
+
+ | **Scenario**                                                                 | **Choose**      | **Why**                                                                |
+| ---------------------------------------------------------------------------- | --------------- | ---------------------------------------------------------------------- |
+| “Survive **local hardware failure** (disk/server)”                           | **LRS**         | 3 copies in the **same** datacenter — protects against hardware faults |
+| “Survive **datacenter/zone failure** (fire, outage in 1 zone)”               | **ZRS**         | 3 copies across **availability zones** in one region                   |
+| “Survive full **region outage** (e.g., Amsterdam down, fail over to Dublin)” | **GRS**         | Primary region + **async geo copy** to paired region (e.g., Ireland)   |
+| “Survive region outage + **read from secondary**”                            | **RA-GRS**      | Same as GRS, but adds **read access** to secondary                     |
+| “Survive zone + region failure (best durability, no read access)”            | **GZRS**        | Combines ZRS + GRS = zone + geo redundancy                             |
+| “Survive zone + region failure + **read from secondary**”                    | **RA-GZRS**     | GZRS + **read access** — not available in all regions                  |
+| “Use globally (e.g., serve US + EU users)”                                   | ❌ None of these | Use **CDN, Azure Front Door, or multi-region apps**, not replication   |
+
+
+
+
+## 💡 Hints and tips
+* SMB uses TCP port 445 — many corporate firewalls block it. That’s why sometimes file shares don’t work in secure environments without firewall rules.
