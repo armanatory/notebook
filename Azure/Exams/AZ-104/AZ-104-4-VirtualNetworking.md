@@ -241,14 +241,7 @@ This section is about securely accessing Azure services without using the public
 
 You were close — this is a classic trap!
 
-🧠 Port Quick Reference
-| Protocol  | Port | Use                           |
-| --------- | ---- | ----------------------------- |
-| **SSH**   | 22   | Secure Shell (Linux VMs, CLI) |
-| **HTTP**  | 80   | Unencrypted web traffic       |
-| **HTTPS** | 443  | Secure web traffic            |
-| **RDP**   | 3389 | Remote Desktop (Windows)      |
-| **FTP**   | 21   | Old school file transfers     |
+
 
 
 
@@ -260,3 +253,26 @@ You were close — this is a classic trap!
 | `New-AzNetworkSecurityGroup`      | Creates an NSG                | Use with subnets/NICs      |
 | `New-AzNetworkSecurityRuleConfig` | Add rule to NSG               | Watch for priority/order   |
  
+
+## Ports
+
+| Port   | Protocol | Use                                   |
+|--------|----------|----------------------------------------|
+| **22** | TCP      | SSH — Linux VM remote access           |
+| **3389** | TCP    | **RDP** — Windows VM remote desktop        |
+| **80** | TCP      | HTTP — Web traffic                     |
+| **443**| TCP      | HTTPS — Secure web traffic, Azure APIs |
+| **445**| TCP      | **SMB** — Azure File Shares (Storage)      |
+| **1433**| TCP     | Azure SQL Database                     |
+| **53** | TCP/UDP  | DNS — Name resolution                  |
+| **123**| UDP      | NTP — Time sync                        |
+| **500/4500** | UDP | IPsec — VPN tunnels (S2S/P2S)         |
+
+🧠 **Quick Memory Hooks**:
+- **22 = SSH**, **3389 = RDP**
+- **80 = HTTP**, **443 = HTTPS**
+- **445 = Azure Files (SMB)**
+- **1433 = SQL DB**
+- **53 = DNS**, **123 = Time**
+- **500/4500 = VPN**
+
